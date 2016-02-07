@@ -2,14 +2,14 @@ package edu.cedarville.cs.crypto;
 
 import java.lang.System;
 import java.nio.charset.StandardCharsets;
-import java.xml.bind.DatatypeConverter;
+import javax.xml.bind.DatatypeConverter;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 public class Tools {
 	
 	public static Integer[] convertFromBytesToInts(byte[] bs) {
-		// If the lenght cannot make full 64 bit blocks pad with space characters
+		// If the length cannot make full 64 bit blocks pad with space characters
 		if(bs.length / 8 != 0){
 			byte[] tmp = bs;
 			bs = new byte[tmp.length + tmp.length % 8];
@@ -23,6 +23,23 @@ public class Tools {
 		IntBuffer ints = ByteBuffer.wrap(bs).asIntBuffer();
 		int[] result = new int[ints.remaining()];
 		ints.get(result);
+
+		return convertIntArrayToIntegerArray(result);
+	}
+
+	private static Integer[] convertIntArrayToIntegerArray(int[] array){
+		Integer[] result = new Integer[array.length];
+		for(int i = 0; i < array.length; i++){
+			result[i] = array[i];
+		}
+		return result;
+	}
+
+	private static int[] convertIntegerArrayToIntArray(Integer[] array){
+		int[] result = new int[array.length];
+		for(int i = 0; i < array.length; i++){
+			result[i] = array[i];
+		}
 		return result;
 	}
 	
@@ -33,14 +50,15 @@ public class Tools {
 				s += "0";
 			}
 		}
-		return convertFromBytesToInts(DatatypConverter.parseHexBinary(s));
+		return convertFromBytesToInts(DatatypeConverter.parseHexBinary(s));
 	}
 	
 	public static byte[] convertFromIntsToBytes(Integer[] ints) {
-		ByteBuffer bytebuff = ByteBuffer.allocate(ints.length * Integer.SIZE / 8);
+		int[] data = convertIntegerArrayToIntArray(ints);
+		ByteBuffer bytebuff = ByteBuffer.allocate(data.length * Integer.SIZE / 8);
 
-		IntBuffer intbuff = ByteBuffer.asIntBuffer();
-		intbuff.put(ints);
+		IntBuffer intbuff = bytebuff.asIntBuffer();
+		intbuff.put(data);
 
 		byte[] result = bytebuff.array();
 

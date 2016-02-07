@@ -15,8 +15,8 @@ public class TinyE {
 		// Encrypt each block of the plaintext
 		// Each block in The TEA cipher is 64 bits so we need to jump 2 spaces each time
 		for(int i = 0; i < plaintext.length; i += 2){
-			Integer[] encryptedBlock;
-			if(mode == Mode.EBC || mode == Mode.CBC) {
+			Integer[] encryptedBlock = null;
+			if(mode == Mode.ECB || mode == Mode.CBC) {
 				// if we are in CBC mode we need to XOR the plaintext block with the IV before we encrypt it.
 				if (mode == Mode.CBC) {
 					plaintext[i] ^= iv[0];
@@ -84,8 +84,8 @@ public class TinyE {
 		//Decrypt each block of plaintext
 		//Each block in the TEA cipher is 64 bits so we need to jump 2 spaces each time
 		for(int i = 0; i < ciphertext.length; i += 2){
-			Integer[] decryptedBlock;
-			if(mode == Mode.EBC || mode == Mode.CBC){
+			Integer[] decryptedBlock = null;
+			if(mode == Mode.ECB || mode == Mode.CBC){
 				decryptedBlock = decryptBlock(ciphertext[i], ciphertext[i + 1], key);
 
 				// If we are in CBC mode we need to XOR the bits by IV to finish decrypting them
@@ -98,7 +98,7 @@ public class TinyE {
 				iv[0] = ciphertext[i];
 				iv[1] = ciphertext[i + 1];
 			} else if(mode == Mode.CTR){
-				decryptedBlock = ctrAlgorithm(ciphertext[i], ciphertext[i + 1], i / 2, key);
+				decryptedBlock = ctrAlgorithm(ciphertext[i], ciphertext[i + 1], i / 2, key, iv);
 			}
 
 			// Write the new block of plaintext to the resulting array.
@@ -113,7 +113,7 @@ public class TinyE {
 		Integer[] result = new Integer[2];
 		int sum = DELTA << 5;
 
-		for(i = 0; i < 32; i++){
+		for(int i = 0; i < 32; i++){
 			rh = rh - (((lh << 4) + key[2]) ^ (lh + sum) ^ ((lh >>> 5) + key[3]));
 			lh = lh - (((rh << 4) + key[0]) ^ (rh + sum) ^ ((rh >>> 5) + key[1]));
 			sum -= DELTA;
