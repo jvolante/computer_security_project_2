@@ -10,7 +10,7 @@ public class TinyE {
 	private static final int DELTA = 0x9e3779b9;
 	
 	public Integer[] encrypt(Integer[] plaintext, Integer[] key, Mode mode, Integer[] iv) {
-		Integer[] cyphertext = new Integer[plaintext.length];
+		Integer[] ciphertext = new Integer[plaintext.length];
 
 		// Encrypt each block of the plaintext
 		// Each block in The TEA cipher is 64 bits so we need to jump 2 spaces each time
@@ -19,25 +19,23 @@ public class TinyE {
 			if(mode == Mode.ECB || mode == Mode.CBC) {
 				// if we are in CBC mode we need to XOR the plaintext block with the IV before we encrypt it.
 				if (mode == Mode.CBC) {
-					plaintext[i] ^= iv[0];
+					plaintext[i    ] ^= iv[0];
 					plaintext[i + 1] ^= iv[1];
 				}
 
-				encryptedBlock  = encryptBlock(plaintext[i], plaintext[i + 1], key);
+				encryptedBlock = encryptBlock(plaintext[i], plaintext[i + 1], key);
 				// Set iv to the block we just encrypted so we can use it on the next block.
 				iv = encryptedBlock;
-
-
 			} else if(mode == Mode.CTR){
 				encryptedBlock = ctrAlgorithm(plaintext[i], plaintext[i + 1], i / 2, iv, key);
 			}
 
-			// Write the new block of cyphertext to the resulting array.
-			cyphertext[i] = encryptedBlock[0];
-			cyphertext[i + 1] = encryptedBlock[1];
+			// Write the new block of ciphertext to the resulting array.
+			ciphertext[i    ] = encryptedBlock[0];
+			ciphertext[i + 1] = encryptedBlock[1];
 		}
 
-		return cyphertext;
+		return ciphertext;
 	}
 
 	private static Integer[] ctrAlgorithm(int lh, int rh, int blockNumber, Integer[] iv, Integer[] key){
@@ -71,7 +69,7 @@ public class TinyE {
 			rh = rh + (((lh << 4) + key[2]) ^ (lh + sum) ^ ((lh >> 5) + key[3]));
 		}
 
-		// Write the left and right halvs to the result array.
+		// Write the left and right halves to the result array.
 		result[0] = lh;
 		result[1] = rh;
 

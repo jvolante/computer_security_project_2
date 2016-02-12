@@ -45,7 +45,7 @@ public class Tools {
 	}
 	
 	public static Integer[] convertFromHexStringToInts(String s) {
-		// If the lenght cannot make full 64 bit blocks pad with 0's
+		// If the length cannot make full 64 bit blocks pad with 0's
 		if(s.length() / 16 != 0){
 			for(int i = 0; i < s.length() % 16; i++){
 				s += "0";
