@@ -53,7 +53,7 @@ public class TinyE {
 
 	private static Integer[] getCTRKey(int blockNumber, Integer[] iv, Integer[] key){
 		// We need to convert IV to a long so that we can properly add in the block number
-		long ivAsLong = (iv[0] << 32) + iv[1];
+		long ivAsLong = (((long)iv[0]) << 32) | ((long)iv[1]);
 		ivAsLong += blockNumber;
 
 		// Now we need to convert IV back to integers so that we can use it in encryptBlock
