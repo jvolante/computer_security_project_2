@@ -67,8 +67,8 @@ public class TinyE {
 		// Do the 32 encryption rounds.
 		for(int i = 0; i < 32; i++){
 			sum += DELTA;
-			lh = lh + (((rh << 4) + key[0]) ^ (rh + sum) ^ ((rh >>> 5) + key[1]));
-			rh = rh + (((lh << 4) + key[2]) ^ (lh + sum) ^ ((lh >>> 5) + key[3]));
+			lh = lh + (((rh << 4) + key[0]) ^ (rh + sum) ^ ((rh >> 5) + key[1]));
+			rh = rh + (((lh << 4) + key[2]) ^ (lh + sum) ^ ((lh >> 5) + key[3]));
 		}
 
 		// Write the left and right halvs to the result array.
@@ -80,6 +80,11 @@ public class TinyE {
 
 	public Integer[] decrypt(Integer[] ciphertext, Integer[] key, Mode mode, Integer[] iv) {
 		Integer[] plaintext = new Integer[ciphertext.length];
+
+		//if iv hasn't been passed we need to allocate an array
+		if(mode == Mode.ECB && iv == null){
+			iv = new Integer[2];
+		}
 
 		//Decrypt each block of plaintext
 		//Each block in the TEA cipher is 64 bits so we need to jump 2 spaces each time
@@ -114,12 +119,12 @@ public class TinyE {
 		int sum = DELTA << 5;
 
 		for(int i = 0; i < 32; i++){
-			rh = rh - (((lh << 4) + key[2]) ^ (lh + sum) ^ ((lh >>> 5) + key[3]));
-			lh = lh - (((rh << 4) + key[0]) ^ (rh + sum) ^ ((rh >>> 5) + key[1]));
+			rh = rh - (((lh << 4) + key[2]) ^ (lh + sum) ^ ((lh >> 5) + key[3]));
+			lh = lh - (((rh << 4) + key[0]) ^ (rh + sum) ^ ((rh >> 5) + key[1]));
 			sum -= DELTA;
 		}
 
-		// Write the left and right halvs to the result array.
+		// Write the left and right halves to the result array.
 		result[0] = lh;
 		result[1] = rh;
 

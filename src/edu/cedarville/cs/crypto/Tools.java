@@ -15,6 +15,7 @@ public class Tools {
 			bs = new byte[tmp.length + tmp.length % 8];
 			System.arraycopy(tmp, 0, bs, 0, tmp.length);
 
+			//pad with spaces
 			for(int i = tmp.length; i < bs.length; i++){
 				bs[i] = " ".getBytes(StandardCharsets.US_ASCII)[0];
 			}
