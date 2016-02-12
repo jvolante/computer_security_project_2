@@ -10,9 +10,9 @@ public class Tools {
 	
 	public static Integer[] convertFromBytesToInts(byte[] bs) {
 		// If the length cannot make full 64 bit blocks pad with space characters
-		if(bs.length / 8 != 0){
+		if(bs.length % 8 != 0){
 			byte[] tmp = bs;
-			bs = new byte[tmp.length + tmp.length % 8];
+			bs = new byte[tmp.length + 8 - tmp.length % 8];
 			System.arraycopy(tmp, 0, bs, 0, tmp.length);
 
 			//pad with spaces
