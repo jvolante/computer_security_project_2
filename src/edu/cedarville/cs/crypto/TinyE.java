@@ -103,7 +103,7 @@ public class TinyE {
 				iv[0] = ciphertext[i];
 				iv[1] = ciphertext[i + 1];
 			} else if(mode == Mode.CTR){
-				decryptedBlock = ctrAlgorithm(ciphertext[i], ciphertext[i + 1], i / 2, key, iv);
+				decryptedBlock = ctrAlgorithm(ciphertext[i], ciphertext[i + 1], i / 2, iv, key);
 			}
 
 			// Write the new block of plaintext to the resulting array.
